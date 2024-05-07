@@ -3,7 +3,12 @@ const roleOptions = ["buyer", "seller", "admin"];
 
 //Schema
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    lastName: {
         type: String,
         required: true,
         trim: true,
@@ -32,6 +37,30 @@ const userSchema = new mongoose.Schema({
         enum: roleOptions,
         default: "buyer",
     },
+    country: {
+        type: String,
+        required: true,
+    }, 
+    countryCode: {
+        type: String,
+        required: true,
+    },
+    number: {
+        type: String,
+        required: true,
+    },
+    countryCode2: {
+        type: String,
+        required: false,
+    },
+    whatsappNum: {
+        type: String,
+        required: false,
+    },
+    isVerified: {
+        type: Number,
+        default: 0,
+    }
 });
 
 
