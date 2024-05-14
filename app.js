@@ -13,6 +13,8 @@ app.set('views', './views');
 const port = process.env.PORT
 const DATABASE_URL = process.env.DATABASE_URL
 
+//just commenting this for production
+
 app.use(cors());
 //Database connection
 connectDB(DATABASE_URL);
