@@ -24,6 +24,7 @@ class userCont {
                     const msg = `<p>Hello! ${newUser.firstName}. Thanks for signing up. Please <a href="http://localhost:8000/mail-verification?id=${newUser._id}">click here</a> to verify your email.</p>`;
                     await sendMail(newUser.email, 'Verify your email', msg);
                     res.status(201).send({ "status": "success", "message": "User created successfully", "token": token });
+
                 } catch (error) {
                     res.status(500).send({ "status": "failed", "message": "Error type : " + error });
                 }
@@ -143,11 +144,26 @@ class userCont {
     }
 
     static sendMailVerification = async (req, res) => {
+        
         try {
              const errors = validationResult(req);
              if (!errors.isEmpty()) {
                  return res.status(400).json({ success: false, msg: 'Validation error', errors: errors.array() });
              }
+
+            const { email } = req.body;
+            const userData = await userModel.findOne({ email: email });
+
+            if(!userData){
+                return res.status(404).send({ "status": "failed", "message": "User not found!" });
+            }
+            if (userData.isVerified === 1) {
+                return res.status(400).send({ "status": "failed", "message": "Email already verified!" });
+            }
+
+            const msg = `<p>Hello! ${userData.firstName}. Thanks for signing up. Please <a href="http://localhost:8000/mail-verification?id=${userData._id}">click here</a> to verify your email.</p>`;
+            await sendMail(userData.email, 'Verify your email', msg);
+            res.status(200).send({ "status": "success", "message": "Verification link sent to your email." });
             
         } catch (error) {
             return res.status(500).send({ "status": "failed", "message": "Something went wrong!" });
